@@ -621,7 +621,17 @@ export default function Home() {
                 <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: ".14em", textTransform: "uppercase", color: "#c8a96e", marginBottom: 10 }}>Work</p>
                 <h2 className="serif" style={{ fontSize: "clamp(2rem,4.5vw,3rem)", fontWeight: 400, color: "#1a1612", letterSpacing: "-0.02em", margin: 0 }}>Case Studies</h2>
               </div>
-              <p style={{ fontSize: 12, color: "#b8a898", fontStyle: "italic", fontFamily: "'Cormorant Garamond',serif", fontSize: 16 }}>Click any card to expand</p>
+              <p
+  style={{
+    fontSize: 16,
+    color: "#b8a898",
+    fontStyle: "italic",
+    fontFamily: "'Cormorant Garamond',serif"
+  }}
+>
+  Click any card to expand
+</p>
+
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))", gap: 14 }}>
               {CASES.map((cs, i) => (
