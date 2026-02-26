@@ -279,6 +279,7 @@ function AIVideoIntro({ onSkip }: { onSkip: () => void }) {
    MAIN PAGE
 ═══════════════════════════════════════════ */
 export default function Home() {
+  
   const [showIntro, setShowIntro] = useState(true);
   const [introGone, setIntroGone] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -319,6 +320,10 @@ export default function Home() {
 
   async function sendMessage(text?: string) {
     const msg = (text ?? input).trim(); if (!msg || loading) return;
+    if (typeof window !== "undefined" && (window as any).posthog) {
+      (window as any).posthog.capture("ai_chat_message_sent");
+    }
+    
     setInput(""); setMessages(p => [...p, { role: "user", text: msg }]); setLoading(true);
     try {
       const res = await fetch("/api/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: msg }) });
@@ -505,13 +510,21 @@ export default function Home() {
                 </a>
               </div>
               <div style={fadeUp(heroRef.vis, 380)}>
-              <a
-  href="/Akshay_Pramod_Teli_Resume.pdf"
-  target="_blank"
-  rel="noopener noreferrer"
- style={{ fontSize: 13, color: "#b8a898", textDecoration: "none", transition: "color .15s" }}
+                <a
+                  href="/Akshay_Pramod_Teli_Resume.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => {
+                    if (typeof window !== "undefined" && (window as any).posthog) {
+                      (window as any).posthog.capture("resume_download_clicked");
+                    }
+                  }}
+                  style={{ fontSize: 13, color: "#b8a898", textDecoration: "none", transition: "color .15s" }}
                   onMouseEnter={e => (e.currentTarget.style.color = "#c8a96e")}
-                  onMouseLeave={e => (e.currentTarget.style.color = "#b8a898")}>Download Resume →</a>
+                  onMouseLeave={e => (e.currentTarget.style.color = "#b8a898")}
+                >
+                  Download Resume →
+                </a>
               </div>
             </div>
           </div>
@@ -639,7 +652,18 @@ export default function Home() {
                   ...fadeUp(caseRef.vis, i * 60),
                   borderColor: expandedCase === i ? `${cs.color}50` : "#e8e0d4",
                   background: expandedCase === i ? `${cs.color}04` : "#fff",
-                }} onClick={() => setExpandedCase(expandedCase === i ? null : i)}>
+                }} onClick={() => {
+                  const isOpening = expandedCase !== i;
+                  setExpandedCase(isOpening ? i : null);
+                
+                  if (typeof window !== "undefined" && (window as any).posthog && isOpening) {
+                    (window as any).posthog.capture("case_study_opened", {
+                      case_title: cs.title,
+                      company: cs.company,
+                    });
+                  }
+                }}
+                >
                   <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>
                     <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: ".1em", textTransform: "uppercase", color: cs.color, border: `1px solid ${cs.color}40`, borderRadius: 999, padding: "3px 9px", background: `${cs.color}10` }}>{cs.tag}</span>
                     <svg style={{ color: "#c8b8a4", transition: "transform .25s", transform: expandedCase === i ? "rotate(180deg)" : "rotate(0)" }} width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
