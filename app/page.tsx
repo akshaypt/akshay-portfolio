@@ -142,6 +142,84 @@ const SUGGESTIONS = [
   "Are you open to advisory work?",
 ];
 
+/* ── Chat Widget (isolated so typing doesn't re-render the whole page) ── */
+function ChatWidget() {
+  const [messages, setMessages] = useState<Msg[]>([]);
+  const [input, setInput]       = useState("");
+  const [loading, setLoading]   = useState(false);
+  const chatBodyRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (chatBodyRef.current) chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
+  }, [messages, loading]);
+
+  async function ask(text: string) {
+    const msg = text.trim();
+    if (!msg || loading) return;
+    setInput("");
+    setMessages(p => [...p, { from: "user", text: msg }]);
+    setLoading(true);
+    try {
+      const res  = await fetch("/api/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: msg }) });
+      const data = await res.json();
+      setMessages(p => [...p, { from: "ai", text: data.reply?.trim() || "Hmm, try a slightly different angle?" }]);
+    } catch {
+      setMessages(p => [...p, { from: "ai", text: "I'm offline for a moment. Ping me at akshay.teli.001@gmail.com and I'll reply personally." }]);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="chat reveal">
+      <div className="chat-top">
+        <div className="chat-id">
+          <div className="chat-avatar">A</div>
+          <div>
+            <div className="who">Akshay Teli</div>
+            <div className="by">AI Agent · trained on his work</div>
+          </div>
+        </div>
+        <div className="chat-status"><span className="live-dot" /> Available</div>
+      </div>
+      <div className="chat-body" ref={chatBodyRef}>
+        {messages.length === 0 && (
+          <div className="chat-empty">
+            <p className="chat-empty-line">What would you like to discuss?</p>
+          </div>
+        )}
+        {messages.map((m, i) => (
+          <div key={i} className={`msg from-${m.from}`}>
+            <div className="who-tag">{m.from === "ai" ? "Akshay" : "You"}</div>
+            <div className="bubble">{m.text}</div>
+          </div>
+        ))}
+        {loading && (
+          <div className="msg from-ai">
+            <div className="who-tag">Akshay</div>
+            <div className="bubble"><span className="typing"><span /><span /><span /></span></div>
+          </div>
+        )}
+      </div>
+      {messages.length === 0 && (
+        <div className="chat-suggestions">
+          <span className="lbl">Suggested topics</span>
+          {SUGGESTIONS.map(s => (
+            <button key={s} className="suggestion" type="button" onClick={() => ask(s)}>{s}</button>
+          ))}
+        </div>
+      )}
+      <div className="chat-input-row">
+        <input className="chat-input" type="text" placeholder="Compose your enquiry…" value={input}
+          onChange={e => setInput(e.target.value)}
+          onKeyDown={e => e.key === "Enter" && ask(input)}
+        />
+        <button className="send-btn" type="button" disabled={loading || !input.trim()} onClick={() => ask(input)}>Send →</button>
+      </div>
+    </div>
+  );
+}
+
 /* ── CSS (from Claude Design, with fixes) ── */
 const css = `
   @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
@@ -542,10 +620,6 @@ const css = `
 export default function Home() {
   const [scrolled, setScrolled]       = useState(false);
   const [openCaseId, setOpenCaseId]   = useState<string | null>(null);
-  const [messages, setMessages]       = useState<Msg[]>([]);
-  const [input, setInput]             = useState("");
-  const [loading, setLoading]         = useState(false);
-  const chatBodyRef = useRef<HTMLDivElement>(null);
 
   /* Nav scroll */
   useEffect(() => {
@@ -576,29 +650,6 @@ export default function Home() {
     document.addEventListener("keydown", h);
     return () => document.removeEventListener("keydown", h);
   }, []);
-
-  /* Scroll chat to bottom */
-  useEffect(() => {
-    if (chatBodyRef.current) chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
-  }, [messages, loading]);
-
-  /* Send message → /api/chat */
-  async function ask(text: string) {
-    const msg = text.trim();
-    if (!msg || loading) return;
-    setInput("");
-    setMessages(p => [...p, { from: "user", text: msg }]);
-    setLoading(true);
-    try {
-      const res  = await fetch("/api/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: msg }) });
-      const data = await res.json();
-      setMessages(p => [...p, { from: "ai", text: data.reply?.trim() || "Hmm, try a slightly different angle?" }]);
-    } catch {
-      setMessages(p => [...p, { from: "ai", text: "I'm offline for a moment. Ping me at akshay.teli.001@gmail.com and I'll reply personally." }]);
-    } finally {
-      setLoading(false);
-    }
-  }
 
   const cs = openCaseId ? CASES[openCaseId] : null;
 
@@ -954,52 +1005,7 @@ export default function Home() {
               A conversational agent grounded in my work, useful for evaluating fit, scoping an advisory engagement, or sounding out a product question before we meet.
             </p>
           </div>
-          <div className="chat reveal">
-            <div className="chat-top">
-              <div className="chat-id">
-                <div className="chat-avatar">A</div>
-                <div>
-                  <div className="who">Akshay Teli</div>
-                  <div className="by">AI Agent · trained on his work</div>
-                </div>
-              </div>
-              <div className="chat-status"><span className="live-dot" /> Available</div>
-            </div>
-            <div className="chat-body" ref={chatBodyRef}>
-              {messages.length === 0 && (
-                <div className="chat-empty">
-                  <p className="chat-empty-line">What would you like to discuss?</p>
-                </div>
-              )}
-              {messages.map((m, i) => (
-                <div key={i} className={`msg from-${m.from}`}>
-                  <div className="who-tag">{m.from === "ai" ? "Akshay" : "You"}</div>
-                  <div className="bubble">{m.text}</div>
-                </div>
-              ))}
-              {loading && (
-                <div className="msg from-ai">
-                  <div className="who-tag">Akshay</div>
-                  <div className="bubble"><span className="typing"><span /><span /><span /></span></div>
-                </div>
-              )}
-            </div>
-            {messages.length === 0 && (
-              <div className="chat-suggestions">
-                <span className="lbl">Suggested topics</span>
-                {SUGGESTIONS.map(s => (
-                  <button key={s} className="suggestion" type="button" onClick={() => ask(s)}>{s}</button>
-                ))}
-              </div>
-            )}
-            <div className="chat-input-row">
-              <input className="chat-input" type="text" placeholder="Compose your enquiry…" value={input}
-                onChange={e => setInput(e.target.value)}
-                onKeyDown={e => e.key === "Enter" && ask(input)}
-              />
-              <button className="send-btn" type="button" disabled={loading || !input.trim()} onClick={() => ask(input)}>Send →</button>
-            </div>
-          </div>
+          <ChatWidget />
         </div>
       </section>
 
