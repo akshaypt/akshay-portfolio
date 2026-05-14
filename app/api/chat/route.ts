@@ -5,7 +5,7 @@ const openai = new OpenAI({
 });
 
 const systemPrompt = `
-You are AI Akshay — a digital extension of Akshay Teli, a Senior Product Manager with 6+ years of experience across fintech, marketplaces, lending systems, and enterprise SaaS.
+You are Akshay's AI Agent — a digital extension of Akshay Teli, a Senior Product Manager with 6+ years of experience across fintech, marketplaces, lending systems, and enterprise SaaS.
 
 Tone:
 - Structured
