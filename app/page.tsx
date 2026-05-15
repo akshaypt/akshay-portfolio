@@ -142,6 +142,46 @@ const SUGGESTIONS = [
   "Are you open to advisory work?",
 ];
 
+/* ── Nav Bar (isolated so scroll events don't re-render the whole page) ── */
+function NavBar() {
+  const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const h = () => setScrolled(window.scrollY > 12);
+    window.addEventListener("scroll", h, { passive: true });
+    return () => window.removeEventListener("scroll", h);
+  }, []);
+
+  return (
+    <>
+      <nav className={`nav${scrolled ? " scrolled" : ""}`} id="nav">
+        <div className="wrap nav-inner">
+          <a href="#top" className="brand"><span className="dot" />Akshay Teli</a>
+          <div className="nav-links">
+            <a href="#about">About</a>
+            <a href="#case-studies">Case Studies</a>
+            <a href="#journey">Experience</a>
+            <a href="#philosophy">Philosophy</a>
+            <a href="#ai-agent" className="nav-cta">Ask my AI →</a>
+            <button className="hamburger" aria-label="Open menu" onClick={() => setMenuOpen(true)}>
+              <span /><span /><span />
+            </button>
+          </div>
+        </div>
+      </nav>
+      <div className={`mobile-menu${menuOpen ? " open" : ""}`}>
+        <button className="mob-close" onClick={() => setMenuOpen(false)}>✕</button>
+        <a href="#about"        onClick={() => setMenuOpen(false)}>About</a>
+        <a href="#case-studies" onClick={() => setMenuOpen(false)}>Case Studies</a>
+        <a href="#journey"      onClick={() => setMenuOpen(false)}>Experience</a>
+        <a href="#philosophy"   onClick={() => setMenuOpen(false)}>Philosophy</a>
+        <a href="#ai-agent" className="mob-cta" onClick={() => setMenuOpen(false)}>Ask my AI →</a>
+      </div>
+    </>
+  );
+}
+
 /* ── Chat Widget (isolated so typing doesn't re-render the whole page) ── */
 function ChatWidget() {
   const [messages, setMessages] = useState<Msg[]>([]);
@@ -210,7 +250,7 @@ function ChatWidget() {
         </div>
       )}
       <div className="chat-input-row">
-        <input className="chat-input" type="text" placeholder="Compose your enquiry…" value={input}
+        <input className="chat-input" type="text" placeholder="Ask me anything…" value={input}
           onChange={e => setInput(e.target.value)}
           onKeyDown={e => e.key === "Enter" && ask(input)}
         />
@@ -329,7 +369,19 @@ const css = `
     font-size: 13.5px; font-weight: 600; letter-spacing: 0.01em; transition: all .2s;
   }
   .nav-cta:hover { background: var(--terracotta); border-color: var(--terracotta); }
-  @media (max-width: 760px) { .nav-links a:not(.nav-cta) { display: none; } }
+  @media (max-width: 760px) { .nav-links a:not(.nav-cta):not(.hamburger) { display: none; } }
+
+  /* Hamburger */
+  .hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; width: 36px; height: 36px; background: none; border: none; cursor: pointer; padding: 4px; }
+  .hamburger span { display: block; width: 22px; height: 2px; background: var(--ink); border-radius: 2px; transition: all .25s; }
+  @media (max-width: 760px) { .hamburger { display: flex; } .nav-cta { display: none !important; } }
+
+  /* Mobile menu */
+  .mobile-menu { display: none; position: fixed; inset: 0; z-index: 999; background: var(--cream); flex-direction: column; padding: 80px 32px 48px; gap: 8px; }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a { font-family: var(--serif); font-size: 28px; color: var(--ink); padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .mobile-menu .mob-cta { margin-top: 24px; display: inline-flex; align-items: center; justify-content: center; background: var(--ink); color: #fff; border-radius: 999px; padding: 14px 28px; font-family: var(--sans); font-size: 15px; font-weight: 600; border: none; }
+  .mobile-menu .mob-close { position: absolute; top: 24px; right: 24px; font-size: 24px; background: none; border: none; cursor: pointer; color: var(--ink); }
 
   /* Hero */
   .hero { padding: 80px 0 100px; position: relative; overflow: hidden; }
@@ -618,15 +670,7 @@ const css = `
    COMPONENT
 ══════════════════════════ */
 export default function Home() {
-  const [scrolled, setScrolled]       = useState(false);
-  const [openCaseId, setOpenCaseId]   = useState<string | null>(null);
-
-  /* Nav scroll */
-  useEffect(() => {
-    const h = () => setScrolled(window.scrollY > 12);
-    window.addEventListener("scroll", h, { passive: true });
-    return () => window.removeEventListener("scroll", h);
-  }, []);
+  const [openCaseId, setOpenCaseId] = useState<string | null>(null);
 
   /* Reveal animations */
   useEffect(() => {
@@ -658,19 +702,7 @@ export default function Home() {
       <style dangerouslySetInnerHTML={{ __html: css }} />
 
       {/* ══ NAV ══ */}
-      <nav className={`nav${scrolled ? " scrolled" : ""}`} id="nav">
-        <div className="wrap nav-inner">
-          <a href="#top" className="brand"><span className="dot" />Akshay Teli</a>
-          <div className="nav-links">
-            <a href="#about">About</a>
-            <a href="#journey">Experience</a>
-            <a href="#case-studies">Case Studies</a>
-            <a href="#philosophy">Philosophy</a>
-            <a href="#ai-agent">Enquiries</a>
-            <a href="#ai-agent" className="nav-cta">Make an enquiry →</a>
-          </div>
-        </div>
-      </nav>
+      <NavBar />
 
       {/* ══ HERO ══ */}
       <header className="hero" id="top">
@@ -701,7 +733,7 @@ export default function Home() {
               </div>
               <div className="cta-row reveal">
                 <a href="#case-studies" className="btn btn-primary">View Case Studies <span className="arrow">↗</span></a>
-                <a href="#ai-agent" className="btn btn-secondary">Make an enquiry →</a>
+                <a href="#ai-agent" className="btn btn-secondary">Ask my AI →</a>
                 <a href="/Akshay_Pramod_Teli_Resume.pdf" target="_blank" rel="noreferrer" className="btn btn-ghost">Download Resume →</a>
               </div>
             </div>
@@ -737,6 +769,79 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* ══ CASE STUDIES ══ */}
+      <section id="case-studies">
+        <div className="wrap">
+          <div className="section-head">
+            <div>
+              <span className="eyebrow">Selected Work</span>
+              <h2 className="h-section reveal" style={{ marginTop: 14 }}>Case <span className="italic" style={{ color: "var(--terracotta)" }}>studies</span>.</h2>
+            </div>
+            <p className="lede reveal">Six projects, four years, one through-line: <em>build the system, not just the screen</em>. Click any card to expand the full write-up.</p>
+          </div>
+          <div className="cases-grid">
+            {(["wallet","lms","xirr","recon","kyc","offline"] as const).map((id) => {
+              const c = CASES[id];
+              return (
+                <button key={id} className="case reveal" type="button" onClick={() => setOpenCaseId(id)}>
+                  <div className="case-head">
+                    <span className="case-tag">{c.tag}</span>
+                    <span className="case-brand">{c.brand}</span>
+                  </div>
+                  <h3>{c.title}</h3>
+                  <div className="case-stats">
+                    {c.stats.map((s, i) => <span key={i} className={`stat${i === 0 ? " primary" : ""}`}>{s}</span>)}
+                  </div>
+                  <div className="case-foot"><span>Read case study</span><span className="arrow">→</span></div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ══ CASE MODAL ══ */}
+      <div className={`cs-overlay${openCaseId ? " open" : ""}`} role="dialog" aria-modal="true" aria-hidden={!openCaseId} onClick={(e) => { if (e.target === e.currentTarget) setOpenCaseId(null); }}>
+        <div className="cs-modal">
+          <button className="cs-close" type="button" onClick={() => setOpenCaseId(null)}>✕</button>
+          {cs && (
+            <div className="cs-content">
+              <div className="cs-eyebrow">
+                <span className="accent">{cs.tag}</span>
+                <span>{cs.brand}</span>
+              </div>
+              <h3 className="cs-title">{cs.title}</h3>
+              <p className="cs-lede">{cs.lede}</p>
+              <div className="cs-stats">
+                {cs.stats.map((s, i) => <span key={i} className={`stat${i === 0 ? " primary" : ""}`}>{s}</span>)}
+              </div>
+              <div className="cs-section">
+                <h4>The problem</h4>
+                <p>{cs.problem}</p>
+              </div>
+              <div className="cs-section">
+                <h4>What I built</h4>
+                <p>{cs.built}</p>
+              </div>
+              <div className="cs-section">
+                <h4>Key decisions</h4>
+                <ul>{cs.decisions.map((d, i) => <li key={i}><span dangerouslySetInnerHTML={{ __html: d }} /></li>)}</ul>
+              </div>
+              <div className="cs-section">
+                <h4>Outcomes</h4>
+                <ul>{cs.outcomes.map((o, i) => <li key={i}><span>{o}</span></li>)}</ul>
+              </div>
+              <div className="cs-takeaway">
+                <span className="lbl">What I took from it</span>
+                {cs.takeaway}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="section-rule" />
 
       {/* ══ JOURNEY ══ */}
       <section id="journey">
@@ -848,79 +953,6 @@ export default function Home() {
         </div>
       </section>
 
-      <div className="section-rule" />
-
-      {/* ══ CASE STUDIES ══ */}
-      <section id="case-studies">
-        <div className="wrap">
-          <div className="section-head">
-            <div>
-              <span className="eyebrow">Selected Work</span>
-              <h2 className="h-section reveal" style={{ marginTop: 14 }}>Case <span className="italic" style={{ color: "var(--terracotta)" }}>studies</span>.</h2>
-            </div>
-            <p className="lede reveal">Six projects, four years, one through-line: <em>build the system, not just the screen</em>. Click any card to expand the full write-up.</p>
-          </div>
-          <div className="cases-grid">
-            {(["wallet","lms","xirr","recon","kyc","offline"] as const).map((id) => {
-              const c = CASES[id];
-              return (
-                <button key={id} className="case reveal" type="button" onClick={() => setOpenCaseId(id)}>
-                  <div className="case-head">
-                    <span className="case-tag">{c.tag}</span>
-                    <span className="case-brand">{c.brand}</span>
-                  </div>
-                  <h3>{c.title}</h3>
-                  <div className="case-stats">
-                    {c.stats.map((s, i) => <span key={i} className={`stat${i === 0 ? " primary" : ""}`}>{s}</span>)}
-                  </div>
-                  <div className="case-foot"><span>Read case study</span><span className="arrow">→</span></div>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* ══ CASE MODAL ══ */}
-      <div className={`cs-overlay${openCaseId ? " open" : ""}`} role="dialog" aria-modal="true" aria-hidden={!openCaseId} onClick={(e) => { if (e.target === e.currentTarget) setOpenCaseId(null); }}>
-        <div className="cs-modal">
-          <button className="cs-close" type="button" onClick={() => setOpenCaseId(null)}>✕</button>
-          {cs && (
-            <div className="cs-content">
-              <div className="cs-eyebrow">
-                <span className="accent">{cs.tag}</span>
-                <span>{cs.brand}</span>
-              </div>
-              <h3 className="cs-title">{cs.title}</h3>
-              <p className="cs-lede">{cs.lede}</p>
-              <div className="cs-stats">
-                {cs.stats.map((s, i) => <span key={i} className={`stat${i === 0 ? " primary" : ""}`}>{s}</span>)}
-              </div>
-              <div className="cs-section">
-                <h4>The problem</h4>
-                <p>{cs.problem}</p>
-              </div>
-              <div className="cs-section">
-                <h4>What I built</h4>
-                <p>{cs.built}</p>
-              </div>
-              <div className="cs-section">
-                <h4>Key decisions</h4>
-                <ul>{cs.decisions.map((d, i) => <li key={i}><span dangerouslySetInnerHTML={{ __html: d }} /></li>)}</ul>
-              </div>
-              <div className="cs-section">
-                <h4>Outcomes</h4>
-                <ul>{cs.outcomes.map((o, i) => <li key={i}><span>{o}</span></li>)}</ul>
-              </div>
-              <div className="cs-takeaway">
-                <span className="lbl">What I took from it</span>
-                {cs.takeaway}
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-
       {/* ══ PHILOSOPHY ══ */}
       <section className="philosophy" id="philosophy">
         <div className="wrap">
@@ -998,8 +1030,8 @@ export default function Home() {
         <div className="wrap">
           <div className="ai-head">
             <div>
-              <span className="eyebrow">Enquiries</span>
-              <h2 className="h-section reveal" style={{ marginTop: 14 }}>Begin an <span className="italic" style={{ color: "var(--terracotta)" }}>enquiry</span>.</h2>
+              <span className="eyebrow">Ask my AI</span>
+              <h2 className="h-section reveal" style={{ marginTop: 14 }}>Ask <span className="italic" style={{ color: "var(--terracotta)" }}>my AI</span>.</h2>
             </div>
             <p className="lede reveal" style={{ maxWidth: "44ch", alignSelf: "flex-end" }}>
               A conversational agent grounded in my work, useful for evaluating fit, scoping an advisory engagement, or sounding out a product question before we meet.
@@ -1028,7 +1060,7 @@ export default function Home() {
               <a href="#journey">Experience</a>
               <a href="#case-studies">Case Studies</a>
               <a href="#philosophy">Philosophy</a>
-              <a href="#ai-agent">Enquiries</a>
+              <a href="#ai-agent">Ask my AI</a>
             </div>
           </div>
           <div className="foot-bottom">
