@@ -202,7 +202,13 @@ function ChatWidget() {
     try {
       const res  = await fetch("/api/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: msg }) });
       const data = await res.json();
-      setMessages(p => [...p, { from: "ai", text: data.reply?.trim() || "Hmm, try a slightly different angle?" }]);
+      const clean = (data.reply ?? "").trim()
+        .replace(/\*\*(.*?)\*\*/g, "$1")
+        .replace(/\*(.*?)\*/g, "$1")
+        .replace(/^#{1,6}\s+/gm, "")
+        .replace(/^[-•]\s+/gm, "")
+        .replace(/^\d+\.\s+/gm, "");
+      setMessages(p => [...p, { from: "ai", text: clean || "Hmm, try a slightly different angle?" }]);
     } catch {
       setMessages(p => [...p, { from: "ai", text: "I'm offline for a moment. Ping me at akshay.teli.001@gmail.com and I'll reply personally." }]);
     } finally {
