@@ -1,0 +1,205 @@
+%%%%
+% Akshay Pramod Teli - Resume
+%%%%
+\documentclass[letterpaper,11pt]{article}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage{fontawesome5}
+\usepackage{multicol}
+\usepackage{bookmark}
+\usepackage{lastpage}
+\usepackage{setspace}
+% Sans-Serif
+%\usepackage[sfdefault]{FiraSans}
+%\usepackage[sfdefault]{roboto}
+%\usepackage[sfdefault]{noto-sans}
+%\usepackage[default]{sourcesanspro}
+% Serif
+\usepackage{CormorantGaramond}
+\usepackage{charter}
+% Colors
+\usepackage{xcolor}
+\definecolor{accentTitle}{HTML}{0e6e55}
+\definecolor{accentText}{HTML}{0e6e55}
+\definecolor{accentLine}{HTML}{a16f0b}
+% Misc. Options
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\urlstyle{same}
+% Adjust Margins
+\addtolength{\oddsidemargin}{-0.7in}
+\addtolength{\evensidemargin}{-0.5in}
+\addtolength{\textwidth}{1.19in}
+\addtolength{\topmargin}{-0.7in}
+\addtolength{\textheight}{1.4in}
+\setlength{\headheight}{14pt}
+\addtolength{\topmargin}{-14pt}
+\setlength{\multicolsep}{-3.0pt}
+\setlength{\columnsep}{-1pt}
+\setlength{\tabcolsep}{0pt}
+\setlength{\footskip}{4.1pt}
+\raggedbottom
+\raggedright
+% ATS Readability
+\input{glyphtounicode}
+\pdfgentounicode=1
+
+%-----------------%
+% Custom Commands %
+%-----------------%
+\newcommand{\documentTitle}[2]{
+  \begin{center}
+    {\Huge\color{accentTitle} #1}
+    \vspace{10pt}
+    {\color{accentLine} \hrule}
+    \vspace{2pt}
+    \footnotesize{#2}
+    \vspace{2pt}
+    {\color{accentLine} \hrule}
+  \end{center}
+}
+\newcommand{\documentFooter}[1]{
+  \setlength{\footskip}{10.25pt}
+  \fancyfoot[C]{\footnotesize #1}
+}
+\newcommand{\numberedPages}{
+  \documentFooter{\thepage/\pageref{LastPage}}
+}
+\titleformat{\section}{
+  \vspace{-5pt}
+  \color{accentText}
+  \raggedright\large\bfseries
+}{}{0em}{}[\color{accentLine}\titlerule]
+\newcommand{\tinysection}[1]{
+  \phantomsection
+  \addcontentsline{toc}{section}{#1}
+  {\large{\bfseries\color{accentText}#1} {\color{accentLine} |}}
+}
+\newcommand{\heading}[2]{
+  \hspace{10pt}#1\hfill#2\\
+}
+\newcommand{\headingBf}[2]{
+  \heading{\textbf{#1}}{\textbf{#2}}
+}
+\newcommand{\headingIt}[2]{
+  \heading{\textit{#1}}{\textit{#2}}
+}
+\newenvironment{resume_list}{
+  \vspace{-7pt}
+  \begin{itemize}[itemsep=-2px, parsep=1pt, leftmargin=30pt]
+}{
+  \end{itemize}
+}
+\newcommand{\itemTitle}[1]{
+  \item[] \underline{#1}\vspace{4pt}
+}
+\renewcommand\labelitemi{-}
+
+%===================%
+% Akshay Pramod Teli %
+%===================%
+\begin{document}
+\setstretch{1.1}
+
+  %---------%
+  % Heading %
+  %---------%
+  \documentTitle{Akshay Pramod Teli}{
+    \href{tel:+919591461981}{
+      \raisebox{-0.05\height} \ +91 9591461981} ~ - ~
+    \href{mailto:akshay.teli.001@gmail.com}{
+      \raisebox{-0.15\height} \ akshay.teli.001@gmail.com} ~ - ~
+    \href{https://www.linkedin.com/in/akshaypramodteli}{
+      \raisebox{-0.15\height} \ linkedin.com/in/akshaypramodteli} ~ - ~
+    \href{https://akshay-portfolio-a73h.vercel.app/}{
+      \raisebox{-0.15\height} \ Portfolio}
+  }
+
+  %---------%
+  % Summary %
+  %---------%
+  \tinysection{Summary}
+  Senior Product Manager who scaled a lending business from Rs.30 Cr to Rs.100 Cr in disbursals and built an enterprise SaaS platform from 0 to 1 serving global users. 6+ years leading cross-functional teams of up to 27 across payments, fintech, and B2B SaaS - turning ambiguous problem spaces into shipped products with measurable business outcomes.
+
+  %--------%
+  % Skills %
+  %--------%
+  \section{Skills}
+  \textbf{Core:} Product Strategy, Roadmapping, PRDs, A/B Testing, GTM Execution, User Research, Stakeholder Management\vspace{4pt}\\
+  \textbf{Technical:} SQL, REST APIs, System Design, RBAC, Offline-First Architecture, Webhooks, AI/ML Integration\vspace{4pt}\\
+  \textbf{Tools \& Analytics:} Cursor, Claude Code, Lovable, n8n, Supabase, Github, Google Analytics, JIRA, Figma, Amplitude, Metabase, Postman, Confluence\vspace{4pt}\\
+  \textbf{Domains:} Payments, Lending, B2B SaaS, Wallets, KYC, ERP, E-commerce, Agri-Tech
+
+  %------------%
+  % Experience %
+  %------------%
+  \section{Experience}
+  \headingBf{Senior Product Manager - KJBN Labs Pvt Ltd}{Nov 2024 - Apr 2026}
+  \begin{resume_list}
+    \item Defined product strategy and led 0-to-1 development of a multi-tenant enterprise SaaS platform, driving architecture decisions and execution from concept through global rollout across multiple business units.
+    \item Designed an accounting and ledger system with audit trails and ERP integration, enabling enterprise-grade finance workflows and reducing manual reconciliation effort for customers.
+    \item Shipped KYC and contract eligibility automation, cutting manual verification effort by 50\% and accelerating compliance turnaround from days to hours.
+    \item Architected role-based access control (RBAC) and configurable workflow engine, enabling secure multi-persona usage and reducing onboarding time for new business units.
+    \item Delivered an offline-first mobile application with intelligent sync, achieving 100\% field operations continuity in low-connectivity environments across distributed teams.
+  \end{resume_list}
+  \vspace{4pt}
+  \headingBf{Product Manager - Bijak (B2B Agri-Commerce Platform)}{Feb 2022 - Oct 2024}
+  \begin{resume_list}
+    \item Scaled the lending business from Rs.30 Cr to over Rs.100 Cr in disbursals by introducing a Loan Management System (LMS) with automated credit decisioning and disbursement workflows.
+    \item Built a wallet system with virtual account integration, automating payouts and driving a 23\% increase in DAU and 40\% improvement in user retention on a platform processing 10,000+ monthly trades.
+    \item Designed a real-time profitability (XIRR) tracking system providing continuous monitoring of projected vs. actual returns, resulting in a 1.7\% average improvement in trade margins.
+    \item Reduced cash transactions by 70\% by introducing digital payment at delivery with a gamified workflow, significantly minimizing payment discrepancies.
+    \item Improved gross margins by 4\% through automated flash sale logic that reduced A-grade to B-grade stock transfers by 17\%, directly impacting unit economics.
+    \item Led a cross-functional team of 27 (engineering, design, QA, ops) using Agile/Scrum, owning 100+ deployment cycles. Recognized as top performer for 2 consecutive review cycles.
+  \end{resume_list}
+  \vspace{4pt}
+  \headingBf{Co-Founder - VP Mart Pvt Ltd}{Jun 2020 - Jan 2022}
+  \begin{resume_list}
+    \item Built a hyperlocal marketplace from scratch with dual apps (Customer and Merchant), covering 7+ categories including groceries, restaurants, and services - launched MVP in 3 months.
+    \item Owned end-to-end product lifecycle from user research and PRDs to wireframes, development, and GTM strategy, onboarding 41 merchants in the first 4 months.
+  \end{resume_list}
+  \vspace{4pt}
+  \headingBf{Co-Founder - Fangover Food Services Pvt Ltd}{Apr 2019 - Jun 2020}
+  \begin{resume_list}
+    \item Launched and scaled a food chain to profitability within 6 months by iterating on a data-driven menu strategy (20+ iterations, 60\%+ gross margin) and optimizing CAC to under Rs.100.
+    \item Drove 25\% improvement in customer retention through personalized customer experience initiatives and targeted acquisition via Instagram campaigns and affiliate partnerships.
+  \end{resume_list}
+
+  %---------------%
+  % Side Projects %
+  %---------------%
+  \section{Side Projects}
+  \headingBf{JobMatch - AI Job Fit Scorer}{Personal Project}
+  \begin{resume_list}
+    \item Built a Chrome extension that scores CV-to-job fit across 7 weighted dimensions and returns an honest 0-100 match score with gap analysis and a clear apply or skip recommendation.
+    \item Designed the scoring engine using Claude API with structured JSON output, calibrated to avoid score inflation and flag unrealistic job descriptions.
+    \item Deployed the backend API on Railway and built the extension UI using Cursor and Claude Code, shipping end to end without a development team.
+  \end{resume_list}
+  \vspace{4pt}
+  \headingBf{Job Pipeline - Job Application Tracker}{Personal Project}
+  \begin{resume_list}
+    \item Built a browser sidebar to track job applications, log status updates, and manage follow-ups without leaving the current tab.
+    \item Designed and shipped the full stack using Next.js, Supabase for persistence and cross-device sync, and Lovable for rapid UI iteration.
+    \item Used Cursor and Claude Code throughout the build for speed and code quality.
+  \end{resume_list}
+
+  %-----------%
+  % Education %
+  %-----------%
+  \section{Education}
+  \headingBf{PES University, Bangalore}{2015 - 2019}
+  \headingIt{B.Tech in Electronics and Communication Engineering}{}
+  \vspace{6pt}
+  \headingBf{Certifications}{}
+  \begin{resume_list}
+    \item Certified Scrum Product Owner (CSPO) - Scrum Alliance
+    \item Google Data Analytics Professional Certificate - Coursera
+  \end{resume_list}
+
+\end{document}
