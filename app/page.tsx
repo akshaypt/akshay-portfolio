@@ -135,6 +135,53 @@ const CASES: Record<string, CaseData> = {
   },
 };
 
+/* ── Side Projects data ── */
+interface ProjectData {
+  tag: string; type: string; title: string; lede: string;
+  stats: string[]; problem: string; built: string;
+  decisions: string[]; outcomes: string[];
+}
+
+const PROJECTS: Record<string, ProjectData> = {
+  jobmatch: {
+    tag: "AI / Chrome Extension", type: "Personal Project",
+    title: "JobMatch",
+    lede: "An honest job fit scorer that tells you whether to apply, not just what keywords to add.",
+    stats: ["7-dimension scoring", "0 to 100 fit score", "Powered by Claude"],
+    problem: "Every time I looked at a job listing, I was guessing. Does my profile actually fit this role or am I just wasting my time? No tool gave me a straight answer. They all just told me to add more keywords.",
+    built: "A Chrome extension that adds a Check Fit button on job sites like LinkedIn and Indeed. Click it and it reads the job description, compares it to your CV, and gives you an honest score out of 100. It also tells you exactly where you are strong, where you fall short, and whether you should actually apply. Powered by Claude.",
+    decisions: [
+      "<b>Scored across 7 things</b> like skills, experience, and goals, because one number alone hides too much.",
+      "<b>Kept the scoring honest.</b> A 70 means a 70, not a feel good 85.",
+      "<b>Showed which gaps are a big deal</b> and which ones you can fix before applying.",
+      "<b>Built it as a browser extension</b> because you are already on the job page. You should not have to open another tab.",
+    ],
+    outcomes: [
+      "Stopped applying to everything and hoping.",
+      "Only applied where the score and gap profile made it worth it.",
+      "More applications actually got responses.",
+    ],
+  },
+  jobpipeline: {
+    tag: "Productivity / Chrome Extension", type: "Personal Project",
+    title: "Job Pipeline",
+    lede: "A job tracking sidebar that lives in your browser so nothing falls through the cracks.",
+    stats: ["Browser sidebar", "Cross-device sync", "Next.js + Supabase"],
+    problem: "Job hunting is basically a second job. I had roles saved across 20 tabs, no idea which ones I had followed up on, and a spreadsheet that I kept forgetting to update. Things were falling through the cracks.",
+    built: "A browser sidebar that lets you save and track job applications without ever leaving the page you are on. You can log where each application stands, set reminders, and see everything in one place. Built with Next.js and Supabase so it works across devices.",
+    decisions: [
+      "<b>Made it a sidebar</b> so you never have to switch tabs to update your pipeline.",
+      "<b>Focused on what needs action next,</b> not just a list of things you applied to.",
+      "<b>Used real infrastructure</b> so it actually saves and syncs, not just a local prototype.",
+    ],
+    outcomes: [
+      "Job search stopped feeling chaotic.",
+      "Always knew what was in flight, what needed a follow up, and what was dead.",
+      "Nothing fell through the gaps.",
+    ],
+  },
+};
+
 const SUGGESTIONS = [
   "Walk me through a 0→1 you've shipped",
   "How did you scale the lending portfolio?",
@@ -161,6 +208,7 @@ function NavBar() {
           <div className="nav-links">
             <a href="#about">About</a>
             <a href="#case-studies">Case Studies</a>
+            <a href="#what-i-build">What I Build</a>
             <a href="#journey">Experience</a>
             <a href="#philosophy">Philosophy</a>
             <a href="#ai-agent" className="nav-cta">Ask my AI →</a>
@@ -173,8 +221,9 @@ function NavBar() {
       <div className={`mobile-menu${menuOpen ? " open" : ""}`}>
         <button className="mob-close" onClick={() => setMenuOpen(false)}>✕</button>
         <a href="#about"        onClick={() => setMenuOpen(false)}>About</a>
-        <a href="#case-studies" onClick={() => setMenuOpen(false)}>Case Studies</a>
-        <a href="#journey"      onClick={() => setMenuOpen(false)}>Experience</a>
+        <a href="#case-studies"  onClick={() => setMenuOpen(false)}>Case Studies</a>
+        <a href="#what-i-build"  onClick={() => setMenuOpen(false)}>What I Build</a>
+        <a href="#journey"       onClick={() => setMenuOpen(false)}>Experience</a>
         <a href="#philosophy"   onClick={() => setMenuOpen(false)}>Philosophy</a>
         <a href="#ai-agent" className="mob-cta" onClick={() => setMenuOpen(false)}>Ask my AI →</a>
       </div>
@@ -667,6 +716,23 @@ const css = `
   .foot-bottom { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px; padding-top: 28px; border-top: 1px solid var(--line); color: var(--ink-3); font-size: 13px; }
   .foot-bottom .signature { font-family: var(--serif); font-style: italic; color: var(--terracotta); }
 
+  /* What I Build section */
+  .build-intro { font-family: var(--serif); font-size: clamp(16px, 1.8vw, 19px); color: var(--ink-3); font-style: italic; max-width: 52ch; margin-top: 10px; }
+  .projects-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 48px; }
+  @media (max-width: 720px) { .projects-grid { grid-template-columns: 1fr; } }
+  .project-card { background: var(--paper); border: 1px solid var(--line); border-radius: 18px; padding: 32px; text-align: left; cursor: pointer; transition: border-color .2s, box-shadow .2s; display: flex; flex-direction: column; gap: 16px; }
+  .project-card:hover { border-color: var(--terracotta); box-shadow: 0 12px 40px -16px rgba(45,70,54,0.18); }
+  .project-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+  .project-tag { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); font-weight: 600; }
+  .project-type { font-size: 11px; color: var(--terracotta); font-weight: 600; letter-spacing: 0.04em; background: var(--terracotta-wash); padding: 3px 10px; border-radius: 99px; }
+  .project-card h3 { font-family: var(--serif); font-size: clamp(22px, 2.2vw, 28px); font-weight: 400; letter-spacing: -0.02em; color: var(--ink); margin: 0; }
+  .project-card .project-lede { font-size: 14.5px; color: var(--ink-3); line-height: 1.55; }
+  .project-stats { display: flex; flex-wrap: wrap; gap: 8px; }
+  .project-stats .stat { font-size: 12px; padding: 5px 12px; border-radius: 99px; background: var(--cream-2); color: var(--ink-2); font-weight: 500; }
+  .project-stats .stat.primary { background: var(--terracotta); color: #fff; }
+  .project-foot { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--ink-3); margin-top: auto; padding-top: 8px; border-top: 1px solid var(--line); }
+  .project-foot .arrow { color: var(--terracotta); }
+
   /* Reveal */
   .reveal { opacity: 0; transform: translateY(16px); transition: opacity .8s ease, transform .8s ease; }
   .reveal.in { opacity: 1; transform: none; }
@@ -676,7 +742,8 @@ const css = `
    COMPONENT
 ══════════════════════════ */
 export default function Home() {
-  const [openCaseId, setOpenCaseId] = useState<string | null>(null);
+  const [openCaseId, setOpenCaseId]       = useState<string | null>(null);
+  const [openProjectId, setOpenProjectId] = useState<string | null>(null);
 
   /* Reveal animations */
   useEffect(() => {
@@ -701,7 +768,8 @@ export default function Home() {
     return () => document.removeEventListener("keydown", h);
   }, []);
 
-  const cs = openCaseId ? CASES[openCaseId] : null;
+  const cs   = openCaseId    ? CASES[openCaseId]       : null;
+  const proj = openProjectId ? PROJECTS[openProjectId] : null;
 
   return (
     <>
@@ -841,6 +909,76 @@ export default function Home() {
               <div className="cs-takeaway">
                 <span className="lbl">What I took from it</span>
                 {cs.takeaway}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="section-rule" />
+
+      {/* ══ WHAT I BUILD ══ */}
+      <section id="what-i-build">
+        <div className="wrap">
+          <div className="section-head">
+            <div>
+              <span className="eyebrow">Side Projects</span>
+              <h2 className="h-section reveal" style={{ marginTop: 14 }}>What I <span className="italic" style={{ color: "var(--terracotta)" }}>build</span>.</h2>
+            </div>
+            <p className="lede reveal">PM by day, builder by night. When I couldn't find tools that worked the way I think, I built them.</p>
+          </div>
+          <div className="projects-grid">
+            {(["jobmatch","jobpipeline"] as const).map((id) => {
+              const p = PROJECTS[id];
+              return (
+                <button key={id} className="project-card reveal" type="button" onClick={() => setOpenProjectId(id)}>
+                  <div className="project-head">
+                    <span className="project-tag">{p.tag}</span>
+                    <span className="project-type">{p.type}</span>
+                  </div>
+                  <h3>{p.title}</h3>
+                  <p className="project-lede">{p.lede}</p>
+                  <div className="project-stats">
+                    {p.stats.map((s, i) => <span key={i} className={`stat${i === 0 ? " primary" : ""}`}>{s}</span>)}
+                  </div>
+                  <div className="project-foot"><span>Read more</span><span className="arrow">→</span></div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ══ PROJECT MODAL ══ */}
+      <div className={`cs-overlay${openProjectId ? " open" : ""}`} role="dialog" aria-modal="true" aria-hidden={!openProjectId} onClick={(e) => { if (e.target === e.currentTarget) setOpenProjectId(null); }}>
+        <div className="cs-modal">
+          <button className="cs-close" type="button" onClick={() => setOpenProjectId(null)}>✕</button>
+          {proj && (
+            <div className="cs-content">
+              <div className="cs-eyebrow">
+                <span className="accent">{proj.tag}</span>
+                <span>{proj.type}</span>
+              </div>
+              <h3 className="cs-title">{proj.title}</h3>
+              <p className="cs-lede">{proj.lede}</p>
+              <div className="cs-stats">
+                {proj.stats.map((s, i) => <span key={i} className={`stat${i === 0 ? " primary" : ""}`}>{s}</span>)}
+              </div>
+              <div className="cs-section">
+                <h4>The problem</h4>
+                <p>{proj.problem}</p>
+              </div>
+              <div className="cs-section">
+                <h4>What I built</h4>
+                <p>{proj.built}</p>
+              </div>
+              <div className="cs-section">
+                <h4>Key decisions</h4>
+                <ul>{proj.decisions.map((d, i) => <li key={i}><span dangerouslySetInnerHTML={{ __html: d }} /></li>)}</ul>
+              </div>
+              <div className="cs-section">
+                <h4>Outcomes</h4>
+                <ul>{proj.outcomes.map((o, i) => <li key={i}><span>{o}</span></li>)}</ul>
               </div>
             </div>
           )}
