@@ -140,9 +140,33 @@ interface ProjectData {
   tag: string; type: string; title: string; lede: string;
   stats: string[]; problem: string; built: string;
   decisions: string[]; outcomes: string[];
+  links?: { label: string; href: string }[];
 }
 
 const PROJECTS: Record<string, ProjectData> = {
+  animestudio: {
+    tag: "AI / SaaS Product", type: "Founder Project",
+    title: "Anime Studio",
+    lede: "A free AI anime story creator that builds a cast, writes chapters, and generates anime/manhwa-style illustrated story slides. Validated it myself by growing an Instagram channel from 0 to 10K followers and 6M+ views in two weeks running on nothing but its own output.",
+    stats: ["0 → 10K IG followers in 2 weeks", "6M+ views", "Free to use, AI-generated"],
+    problem: "Anyone wanting to post anime or manhwa-style story content needs drawing skills, an artist, or expensive tools, and most AI image generators produce one-off pictures with no continuity of characters or story. There was no easy way to go from an idea to a consistent illustrated chapter you could actually post.",
+    built: "Anime Studio: a tool where you create a cast of characters, write your story in chapters, and generate consistent anime/manhwa-style illustrated slides ready for Instagram. Stories, characters, and scripts are free; everyone gets one free image generation a day, with credits only for extra or HD images. Built with a full SEO/GEO foundation (sitemap, structured data, AI-crawler access, a 20-post content library) so the product is discoverable by both search engines and AI answer engines.",
+    decisions: [
+      "<b>Used my own product to prove it.</b> Launched @animeishq.official and ran it entirely on Anime Studio output, no external tools or artists.",
+      "<b>Free-first, always.</b> Story creation and one image a day are free for everyone; credits only kick in for extra or HD images, so the core loop has zero barrier to entry.",
+      "<b>Consistency over one-off images.</b> The product is built around a persistent cast and story, not single disconnected AI images, so creators can publish a series.",
+      "<b>Built for AI search from day one.</b> Structured data, sitemaps, and an llms.txt mean the product is citable by AI answer engines, not just Google.",
+    ],
+    outcomes: [
+      "@animeishq.official went from 0 to 10K followers and 6M+ views in 2 weeks, using only content made in Anime Studio.",
+      "That growth became the product's own case study and the recurring proof point across its content marketing.",
+      "Live at animestudio.work with a 20-post SEO/GEO content library built around the same proof.",
+    ],
+    links: [
+      { label: "Visit Anime Studio", href: "https://animestudio.work" },
+      { label: "@animeishq on Instagram", href: "https://instagram.com/animeishq.official" },
+    ],
+  },
   jobmatch: {
     tag: "AI / Chrome Extension", type: "Personal Project",
     title: "JobMatch",
@@ -625,6 +649,7 @@ const css = `
   .cs-section ul li { display: grid; grid-template-columns: 18px 1fr; gap: 12px; color: var(--ink-2); font-size: 15.5px; line-height: 1.55; }
   .cs-section ul li::before { content: "→"; color: var(--terracotta); font-family: var(--serif); font-style: italic; font-size: 16px; }
   .cs-section b { color: var(--ink); }
+  .cs-links { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
   .cs-takeaway { margin-top: 36px; padding: 24px 28px; background: var(--paper); border-left: 3px solid var(--terracotta); border-radius: 4px; font-family: var(--serif); font-style: italic; color: var(--ink); font-size: 18px; line-height: 1.5; }
   .cs-takeaway .lbl { display: block; font-family: var(--sans); font-style: normal; font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-3); font-weight: 600; margin-bottom: 8px; }
   body.cs-locked { overflow: hidden; }
@@ -928,7 +953,7 @@ export default function Home() {
             <p className="lede reveal">PM by day, builder by night. When I couldn't find tools that worked the way I think, I built them.</p>
           </div>
           <div className="projects-grid">
-            {(["jobmatch","jobpipeline"] as const).map((id) => {
+            {(["animestudio","jobmatch","jobpipeline"] as const).map((id) => {
               const p = PROJECTS[id];
               return (
                 <button key={id} className="project-card reveal" type="button" onClick={() => setOpenProjectId(id)}>
@@ -980,6 +1005,15 @@ export default function Home() {
                 <h4>Outcomes</h4>
                 <ul>{proj.outcomes.map((o, i) => <li key={i}><span>{o}</span></li>)}</ul>
               </div>
+              {proj.links && (
+                <div className="cs-links">
+                  {proj.links.map((l, i) => (
+                    <a key={i} href={l.href} target="_blank" rel="noopener noreferrer" className={`btn ${i === 0 ? "btn-primary" : "btn-secondary"}`}>
+                      {l.label} <span className="arrow">↗</span>
+                    </a>
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </div>
