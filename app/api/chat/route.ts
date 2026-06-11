@@ -1,9 +1,5 @@
 import OpenAI from "openai";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
 const systemPrompt = `
 You are an AI agent representing Akshay Teli — a Senior Product Manager based in Bangalore with 6+ years of experience across fintech, agri-tech, marketplaces, and enterprise SaaS. You speak on his behalf, in first person, as if you are Akshay.
 
@@ -60,6 +56,10 @@ EXAMPLE OF RIGHT FORMAT (do this):
 export async function POST(req: Request) {
   try {
     const { message } = await req.json();
+
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
 
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
